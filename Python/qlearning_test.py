@@ -19,10 +19,10 @@ import matplotlib.pyplot as plt
 
 def init_model():
     model = Sequential()
-    model.add(Dense(256, init='lecun_uniform', input_shape=(48 * 12,)))
+    model.add(Dense(512, init='lecun_uniform', input_shape=(48 * 12,)))
     model.add(Activation('relu'))
 
-    model.add(Dense(256, init='lecun_uniform'))
+    model.add(Dense(512, init='lecun_uniform'))
     model.add(Activation('relu'))
 
     model.add(Dense(6, init='lecun_uniform'))
@@ -68,13 +68,13 @@ def get_move(input_array, model):
     return numpy.argmax(q_values)
 
 
-exploration_epochs = 7500
-final_epochs = 2500
+exploration_epochs = 9500
+final_epochs = 500
 epochs = exploration_epochs + final_epochs
 gamma = 0.9
 initial_epsilon = 0.75
 final_epsilon = 0.01
-epsilon = 1
+epsilon = initial_epsilon
 
 losses = []
 winners = []
@@ -91,7 +91,7 @@ for epoch in range(epochs):
     if epsilon > final_epsilon:
         epsilon -= (initial_epsilon - final_epsilon) / exploration_epochs
     else:
-        epsilon = 0
+        epsilon = final_epsilon
 
     moves_count = 0
     max_count = 400
