@@ -12,10 +12,10 @@ def get_state(board, player):
     if player == 1:
         board = numpy.array([board[(i + 6) % 12] for i in range(12)])
 
-    state = -numpy.ones(48 * 12)
+    state = -numpy.ones(32 * 12)
     for i in range(12):
         for j in range(board[i]):
-            state[i * 48 + j] = 1
+            state[i * 32 + j] = 1
 
     return state
 
@@ -44,7 +44,7 @@ class QPlayer:
     def __init__(self, model):
         self.model = model  # keras.models.load_model(path)
 
-    def get_move(self, awale: Awale, player):
+    def get_move(self, awale, player):
         board = awale.board
         score = awale.score
         input_array = get_input_array(board, score, player)

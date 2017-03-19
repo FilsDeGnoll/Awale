@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 
 def init_model():
     model = Sequential()
-    model.add(Dense(512, init='lecun_uniform', input_shape=(48 * 12,)))
+    model.add(Dense(512, init='lecun_uniform', input_shape=(32 * 12,)))
     model.add(Activation('relu'))
 
     model.add(Dense(512, init='lecun_uniform'))
@@ -39,10 +39,10 @@ def get_state(board, player):
     if player == 1:
         board = numpy.array([board[(i + 6) % 12] for i in range(12)])
 
-    state = -numpy.ones(48 * 12)
+    state = -numpy.ones(32 * 12)
     for i in range(12):
         for j in range(board[i]):
-            state[i * 48 + j] = 1
+            state[i * 32 + j] = 1
     return state
 
 
@@ -68,12 +68,12 @@ def get_move(input_array, model):
     return numpy.argmax(q_values)
 
 
-exploration_epochs = 9500
+exploration_epochs = 49500
 final_epochs = 500
 epochs = exploration_epochs + final_epochs
-gamma = 0.9
+gamma = 0.75
 initial_epsilon = 0.75
-final_epsilon = 0.01
+final_epsilon = 1e-5
 epsilon = initial_epsilon
 
 losses = []
@@ -132,7 +132,7 @@ for epoch in range(epochs):
         winners.append(winner)
 
         if player == 0:
-            reward = {-3: -10, -2: 0 * (delta_score[0] - delta_score[1]), -1: -1, 0: 5, 1: -5}[winner]
+            reward = {-3: -10, -2: delta_score[0] - delta_score[1], -1: 0, 0: 0, 1: 0}[winner]
 
         if player == 1 or winner != -2:
             [old_q_values] = model.predict([numpy.array([old_input_array])])
@@ -157,7 +157,7 @@ for epoch in range(epochs):
     if moves_count >= max_count:
         print("La partie est trop longue.")
 
-# model.save("qlearner.model")
+model.save("qlearner1903.model")
 
 n = epochs // 25
 x = [i * n for i in range(25)]
@@ -179,6 +179,7 @@ for i in range(25):
     winner1[i] = sum(w == 1) * 100 / p
     error[i] = sum(w == -3) * 100 / p
 
+# TODO : corriger le graphique des pourcentages.
 plt.subplot(222)
 plt.plot(x, winner0, "-o", label="Pourentage de parties gagnées par QPlayer", color="blue")
 plt.plot(x, winner1, "-o", label="Pourentage de parties gagnées par NewbiePlayer", color="green")
@@ -196,9 +197,11 @@ plt.plot(x, [numpy.array(score1[i * n:(i + 1) * n]).mean() for i in range(25)], 
 plt.xlabel("Époque")
 plt.ylabel("Score moyen de RandomPlayer")
 plt.show()
+
 plt.plot(x, [numpy.array(nbre_coups[i * n:(i + 1) * n]).mean() for i in range(25)], "-o")
+plt.xlabel("Époque")
+plt.ylabel("Nombre de coups moyen pour finir la partie")
 plt.show()
 
 game = Game(QPlayer(model), RandomPlayer(), debug=True)
 game.new_game()
-game.display_result()
