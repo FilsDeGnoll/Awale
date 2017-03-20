@@ -8,7 +8,7 @@ class AspirantePlayer:
         self.beta = 48
         self.evaluation = evaluation
 
-    def get_move_rec(self, awale, player):
+    def get_move(self, awale, player):
         move = aspirante(awale, self.depth, player, self.alpha, self.beta, self.evaluation)
 
         return move
