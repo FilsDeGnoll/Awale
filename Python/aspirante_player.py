@@ -9,6 +9,6 @@ class AspirantePlayer:
         self.evaluation = evaluation
 
     def get_move(self, awale, player):
-        move = aspirante(awale, self.depth, player, self.alpha, self.beta, self.evaluation)
+        move = aspirante(awale, self.depth, player, self.alpha, self.beta, self.evaluation)[1]
 
         return move
