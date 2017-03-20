@@ -5,10 +5,11 @@ from random_player import RandomPlayer
 from newbie_player import NewbiePlayer
 from negamax_player import NegamaxPlayer
 from negabeta_player import NegabetaPlayer
+from aspirante_player import AspirantePlayer
 from evaluation import *
 import time
 
-game = Game(NegabetaPlayer(6,evaluation2), NegabetaPlayer(6, evaluation2), debug=True)
+game = Game(AspirantePlayer(5,evaluation2), AspirantePlayer(5, evaluation2), debug=False)
 t = time.clock()
 game.new_game()
 t = time.clock() - t
