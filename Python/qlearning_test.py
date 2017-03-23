@@ -68,8 +68,8 @@ def get_move(input_array, model):
     return numpy.argmax(q_values)
 
 
-exploration_epochs = 49500
-final_epochs = 500
+exploration_epochs = 100 * 100
+final_epochs = 100 * 0
 epochs = exploration_epochs + final_epochs
 gamma = 0.75
 initial_epsilon = 0.75
@@ -132,7 +132,7 @@ for epoch in range(epochs):
         winners.append(winner)
 
         if player == 0:
-            reward = {-3: -10, -2: delta_score[0] - delta_score[1], -1: 0, 0: 0, 1: 0}[winner]
+            reward = {-3: -100, -2: delta_score[0] - delta_score[1], -1: 0, 0: 0, 1: 0}[winner]
 
         if player == 1 or winner != -2:
             [old_q_values] = model.predict([numpy.array([old_input_array])])
@@ -157,51 +157,52 @@ for epoch in range(epochs):
     if moves_count >= max_count:
         print("La partie est trop longue.")
 
-model.save("qlearner1903.model")
+model.save("qlearner2303.model")
 
-n = epochs // 25
-x = [i * n for i in range(25)]
+n = epochs // 100
+x = [i * 100 for i in range(n)]
 
-plt.subplot(221)
-plt.plot(x, [numpy.array(losses[i * n:(i + 1) * n]).mean() for i in range(25)], "-o")
+plt.subplot(231)
+plt.plot(x, [numpy.array(losses[i * 100:(i + 1) * 100]).mean() for i in range(n)], "-o")
 plt.xlabel("Époque")
 plt.ylabel("Loss")
 
-winner0 = numpy.zeros(25)
-winner1 = numpy.zeros(25)
-error = numpy.zeros(25)
+winner0 = numpy.zeros(n)
+winner1 = numpy.zeros(n)
+error = numpy.zeros(n)
 winners = numpy.array(winners)
 
-for i in range(25):
-    w = winners[i * n:(i + 1) * n]
+for i in range(n):
+    w = winners[i * 100:(i + 1) * 100]
     p = sum(w != -2)
     winner0[i] = sum(w == 0) * 100 / p
     winner1[i] = sum(w == 1) * 100 / p
     error[i] = sum(w == -3) * 100 / p
 
 # TODO : corriger le graphique des pourcentages.
-plt.subplot(222)
+plt.subplot(232)
 plt.plot(x, winner0, "-o", label="Pourentage de parties gagnées par QPlayer", color="blue")
 plt.plot(x, winner1, "-o", label="Pourentage de parties gagnées par NewbiePlayer", color="green")
 plt.plot(x, error, "-o", label="Pourcentage de parties terminées pour coup invalide", color="red")
 plt.xlabel("Époque")
 plt.legend()
 
-plt.subplot(223)
-plt.plot(x, [numpy.array(score0[i * n:(i + 1) * n]).mean() for i in range(25)], "-o")
+plt.subplot(234)
+plt.plot(x, [numpy.array(score0[i * 100:(i + 1) * 100]).mean() for i in range(n)], "-o")
 plt.xlabel("Époque")
 plt.ylabel("Score moyen de QPlayer")
 
-plt.subplot(224)
-plt.plot(x, [numpy.array(score1[i * n:(i + 1) * n]).mean() for i in range(25)], "-o")
+plt.subplot(235)
+plt.plot(x, [numpy.array(score1[i * 100:(i + 1) * 100]).mean() for i in range(n)], "-o")
 plt.xlabel("Époque")
 plt.ylabel("Score moyen de RandomPlayer")
-plt.show()
 
-plt.plot(x, [numpy.array(nbre_coups[i * n:(i + 1) * n]).mean() for i in range(25)], "-o")
+plt.subplot(236)
+plt.plot(x, [numpy.array(nbre_coups[i * 100:(i + 1) * 100]).mean() for i in range(n)], "-o")
 plt.xlabel("Époque")
 plt.ylabel("Nombre de coups moyen pour finir la partie")
-plt.show()
 
+plt.show()
+# plt.savefig("qlearner_epochs{}_gamma{}".format(epochs, gamma))
 game = Game(QPlayer(model), RandomPlayer(), debug=True)
 game.new_game()

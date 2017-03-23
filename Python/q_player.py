@@ -53,4 +53,4 @@ class QPlayer:
         if can_play(board, score, player, move):
             return move
         else:
-            raise Exception("Erreur! La case {} ne peut pas être jouée.".format(move))
+            raise ValueError("Erreur! La case {} ne peut pas être jouée.".format(move))
