@@ -24,7 +24,7 @@ def aspirante(awale, depth, player, alpha, beta, evaluation):
             if score > best_score:
                 best_score = score
                 best_move = i
-                if best_score >= alpha:
+                if best_score > alpha:
                     alpha = best_score
                     if alpha >= beta:
                         break

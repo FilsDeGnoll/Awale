@@ -56,7 +56,7 @@ def evaluation2(awale, player):
     return rep
 
 def evaluation3 (awale, player):
-    d = 0.4
+    d = 0.5
     s0 = awale.score[player]
     s1 = awale.score[1 - player]
     score = s0 - s1
