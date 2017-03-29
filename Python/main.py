@@ -1,14 +1,11 @@
 import numpy
 
 
-# TODO : Revoir la documentation des fonctions.
 def init_board():
     """
-    Le plateau de jeu est constitué de 2 rangées de 6 trous, chaque trou contenant 4 graines au départ par défaut.
-    Le score de chaque joueur est initalisé à 0 par défaut.
+    Le plateau de jeu est constitué de 2 rangées de 6 trous, chaque trou contenant 4 graines au départ.
     """
     board = 4 * numpy.ones(12, numpy.int)
-    # Vaut -2 tant que la partie n'est pas finie, -1 s'il y a égalité et le numéro du joueur s'il y a un gagnant.
 
     return board
 
@@ -16,6 +13,7 @@ def init_board():
 def deal(board, move):
     """
     Distribue les graines de la case indiquée et renvoie le nouveau plateau ainsi que l'indice de la case d'arrivée.
+    :param board: plateau
     :param move: indice de la case à jouer
     :return: nouveau plateau, case d'arrivée
     """
@@ -36,6 +34,8 @@ def deal(board, move):
 def pick(board, score, player, move):
     """
     Ramasse les graines et renvoie le nouveau plateau ainsi que le nouveau score.
+    :param board: plateau
+    :param score: score
     :param player: numéro du joueur
     :param move: indice de la case à jouer
     :return: nouveau plateau, nouveau score
@@ -55,6 +55,9 @@ def pick(board, score, player, move):
 
 def will_starve(board, score, player, move):
     """
+    Vérifie si le joueur va affamer l'adversaire.
+    :param board: plateau
+    :param score: score
     :param player: numéro du joueur
     :param move: indice de la case à jouer
     :return: "va affamer l'adversaire"
@@ -69,6 +72,9 @@ def will_starve(board, score, player, move):
 
 def cannot_feed(board, score, player):
     """
+    Vérifie si le joueur ne peut pas nourrir l'adversaire.
+    :param board: plateau
+    :param score: score
     :param player: numéro du joueur
     :return: "ne peut pas nourrir l'adversaire"
     """
@@ -84,6 +90,9 @@ def cannot_feed(board, score, player):
 
 def can_play(board, score, player, move):
     """
+    Vérifie si le coup indiqué est valide.
+    :param board: plateau
+    :param score: score
     :param player: numéro du joueur
     :param move: indice de la case à jouer
     :return: "le coup est valide"
@@ -94,9 +103,11 @@ def can_play(board, score, player, move):
     maxpick = (2 - player) * 6
 
     if board[minpick:maxpick].sum() == 0:
+
         return minmove <= move < maxmove and board[move] != 0 and (
             not will_starve(board, score, player, move) or cannot_feed(board, score, player))
     else:
+
         return minmove <= move < maxmove and board[move] != 0
 
 
@@ -119,7 +130,9 @@ def play(board, score, player, move):
 def get_seeds(board, score):
     """
     Partage les graines s'il en reste sur le plateau à la fin de la partie : chaque joueur récupère les graines
-    qui sont dans sa rangée.
+    qui sont dans son territoire.
+    :param board: plateau
+    :param score: score
     :return: aucun retour
     """
     for i in range(12):
@@ -130,9 +143,13 @@ def get_seeds(board, score):
 
 def get_winner(board, score, winner, player):
     """
-    Vérifie si la partie est terminée.
+    Vérifie si la partie est terminée : winner vaut -2 si la partie n'est pas terminée, -1 s'il y a égalité ou le numéro
+    du gagnant sinon.
+    :param board: plateau
+    :param score: score
+    :param winner: numéro du gagnant ou -2 si la partie n'est pas terminée
     :param player: numéro du joueur qui vient de jouer
-    :return: aucun retour
+    :return: nouvel état
     """
     if winner == -2:
         minpick = (1 - player) * 6

@@ -1,10 +1,5 @@
-import keras.models
 import numpy
-
-from awale import Awale
-from main import can_play, deal
-
-
+from main import can_play
 
 
 def get_state(board, player):
@@ -19,36 +14,21 @@ def get_state(board, player):
 
     return state
 
-def get_moves(board, score, player):
-    board = numpy.copy(board)
-    minmove = player * 6
-    maxmove = (1 + player) * 6
-    moves = -numpy.ones(6)
-    for i in range(minmove, maxmove):
-        if can_play(board, score, player, i):
-            moves[i] = 1
-    return moves
 
-def get_input_array(board, score, player):
-    state = get_state(board, player)
-    moves = get_moves(board, score, player)
-    return state
-
-def get_move(input_array, model):
-    [q_values] = model.predict(numpy.array([input_array]))
+def get_move(state, model):
+    [q_values] = model.predict(numpy.array([state]))
     return numpy.argmax(q_values)
-
 
 
 class QPlayer:
     def __init__(self, model):
-        self.model = model  # keras.models.load_model(path)
+        self.model = model
 
     def get_move(self, awale, player):
         board = awale.board
         score = awale.score
-        input_array = get_input_array(board, score, player)
-        move = get_move(input_array, self.model) + 6 * player
+        state = get_state(board, player)
+        move = get_move(state, self.model) + 6 * player
 
         if can_play(board, score, player, move):
             return move

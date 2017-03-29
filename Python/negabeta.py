@@ -1,4 +1,14 @@
 def negabeta(awale, depth, player, alpha, beta, evaluation):
+    """
+    Implémente l'algorithme negabeta : renvoie le meilleur score et le meilleur coup possibles.
+    :param awale: état de la partie
+    :param depth: profondeur d'exploration
+    :param player: numéro du joueur
+    :param alpha: valeur pour l'élagage
+    :param beta: valeur pour l'élagage
+    :param evaluation: fonction d'évaluation utilisée 
+    :return: meilleur score, meilleur coup
+    """
     if awale.winner != -2 or depth == 0:
 
         return evaluation(awale, player), 6 * player

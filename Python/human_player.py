@@ -2,7 +2,7 @@ class HumanPlayer:
     @staticmethod
     def get_move(awale, player):
         """
-        :param awale: jeu d'awalé
+        :param awale: état de la partie
         :param player: numéro du joueur
         :return: indice de la case choisie par le joueur
         """

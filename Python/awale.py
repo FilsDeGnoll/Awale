@@ -10,19 +10,19 @@ class Awale:
         """
         Le plateau de jeu est constitué de 2 rangées de 6 trous, chaque trou contenant 4 graines au départ par défaut.
         Le score de chaque joueur est initalisé à 0 par défaut.
+        winner vaut -2 tant que la partie n'est pas terminée, -1 s'il y a égalité et le numéro du gagnant sinon.
         :param board: plateu de jeu
         :param score: score des deux joueurs
         """
         self.board = board if board is not None else 4 * numpy.ones(12, numpy.int)
-        self.score = score if score is not None else numpy.zeros(2, numpy.int)
-        # Vaut -2 tant que la partie n'est pas finie, -1 s'il y a égalité et le numéro du joueur s'il y a un gagnant.
+        self.score = score if score is not None else [0, 0]
         self.winner = winner
 
     def copy(self):
         """
         :return: copie de l'awalé
         """
-        board, score = numpy.copy(self.board), numpy.copy(self.score)
+        board, score = numpy.copy(self.board), self.score[:]
 
         return Awale(board, score, winner=self.winner)
 
@@ -53,7 +53,7 @@ class Awale:
         :return: nouveau plateau, nouveau score
         """
         new_board, i = self.deal(move)
-        new_score = numpy.copy(self.score)
+        new_score = self.score[:]
         minpick = (1 - player) * 6
         maxpick = (2 - player) * 6
 
@@ -66,6 +66,7 @@ class Awale:
 
     def will_starve(self, player, move):
         """
+        Vérifie si le joueur va affamer l'adversaire.
         :param player: numéro du joueur
         :param move: indice de la case à jouer
         :return: "va affamer l'adversaire"
@@ -79,6 +80,7 @@ class Awale:
 
     def cannot_feed(self, player):
         """
+        Vérifie si le joueur ne peut pas nourrir l'adversaire.
         :param player: numéro du joueur
         :return: "ne peut pas nourrir l'adversaire"
         """
@@ -93,6 +95,7 @@ class Awale:
 
     def can_play(self, player, move):
         """
+        Vérifie si le coup indiqué est valide.
         :param player: numéro du joueur
         :param move: indice de la case à jouer
         :return: "le coup est valide"
@@ -103,9 +106,11 @@ class Awale:
         maxpick = (2 - player) * 6
 
         if self.board[minpick:maxpick].sum() == 0:
+
             return minmove <= move < maxmove and self.board[move] != 0 and (
                 not self.will_starve(player, move) or self.cannot_feed(player))
         else:
+
             return minmove <= move < maxmove and self.board[move] != 0
 
     def play(self, player, move):
