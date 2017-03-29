@@ -103,7 +103,8 @@ class Game:
                 if self.debug:
                     print("Le joueur {} a joué la case {}.".format(player, move))
             else:
-                raise Exception("Erreur! La case {} ne peut pas être jouée.".format(move))
+                self.display_board()
+                raise ValueError("Erreur! La case {} ne peut pas être jouée.".format(move))
             player = 1 - player
 
         if self.debug:

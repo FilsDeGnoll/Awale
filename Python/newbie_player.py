@@ -1,6 +1,11 @@
 class NewbiePlayer:
     @staticmethod
     def best_move(awale, player):
+        """
+        :param awale: état de la partie 
+        :param player: numéro du joueur
+        :return: meilleur coup
+        """
         minmove = player * 6
         maxmove = (1 + player) * 6
         possible_moves = []
@@ -21,6 +26,11 @@ class NewbiePlayer:
 
     @staticmethod
     def get_move(awale, player):
+        """
+        :param awale: état de la partie 
+        :param player: numéro du joueur
+        :return: indice de la case choisie par le joueur 
+        """
         move = -1
 
         while not awale.can_play(player, move):

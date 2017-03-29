@@ -3,11 +3,11 @@ from awale import Awale
 
 def negamax(awale, depth, player, evaluation):
     """
-    Calcule le meilleur score et le meilleur coup possible.
-    :param awale: jeu d'awalé
-    :param depth: profondeur de l'arbre
+    Implémente l'algorithme negamax : renvoie le meilleur score et le meilleur coup possibles.
+    :param awale: état de la partie
+    :param depth: profondeur d'exploration
     :param player: numéro du joueur
-    :param evaluation: fonction d'évaluation du joueur
+    :param evaluation: fonction d'évaluation utilisée 
     :return: meilleur score, meilleur coup
     """
     if awale.winner != -2 or depth == 0:
