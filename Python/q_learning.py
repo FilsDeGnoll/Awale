@@ -28,15 +28,15 @@ def init_model():
     return model
 
 
-exploration_epochs = 45000
-final_epochs = 5000
+exploration_epochs = 9000
+final_epochs = 1000
 epochs = exploration_epochs + final_epochs
-gamma = 0.75
+gamma = 0.8
 initial_epsilon = 0.75
 final_epsilon = 1e-5
 epsilon = initial_epsilon
 
-loss = []
+losses = []
 winners = []
 score0 = []
 score1 = []
@@ -101,8 +101,8 @@ for epoch in range(epochs):
 
             X = numpy.array([old_state])
             Y = numpy.array([old_q_values])
-            l = model.train_on_batch(X, Y)
-            loss.append(l)
+            loss = model.train_on_batch(X, Y)
+            losses.append(loss)
 
         player = 1 - player
 
@@ -112,17 +112,17 @@ for epoch in range(epochs):
     if moves_count >= max_count:
         print("La partie est trop longue.")
 
-filename = "qplayer_e{}_g{}.model".format(epochs, gamma)
+filename = "C:\\Users\\Laouen\\PycharmProjects\\Awale\\QPlayers\\qplayer_e{}_g{}.model".format(epochs, gamma)
 model.save(filename)
 
 winners = numpy.array(winners)
 winners = winners[winners != -2]
 
-numpy.save("C:\\Users\\Laouen\\PycharmProjects\\Awale\\Tableaux\ Q-learning\\winners_e{}_g{}.npy".format(epochs, gamma),
+numpy.save("C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\winners_e{}_g{}.npy".format(epochs, gamma),
            winners)
-numpy.save("C:\\Users\\Laouen\\PycharmProjects\\Awale\\Tableaux\ Q-learning\\loss_e{}_g{}.npy".format(epochs, gamma),
-           loss)
-numpy.save("C:\\Users\\Laouen\\PycharmProjects\\Awale\\Tableaux\ Q-learning\\score0_e{}_g{}.npy".format(epochs, gamma),
+numpy.save("C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\losses_e{}_g{}.npy".format(epochs, gamma),
+           losses)
+numpy.save("C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\score0_e{}_g{}.npy".format(epochs, gamma),
            score0)
-numpy.save("C:\\Users\\Laouen\\PycharmProjects\\Awale\\Tableaux\ Q-learning\\score1_e{}_g{}.npy".format(epochs, gamma),
+numpy.save("C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\score1_e{}_g{}.npy".format(epochs, gamma),
            score1)
