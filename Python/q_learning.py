@@ -6,7 +6,7 @@ from main import init_board, play, can_play, get_winner
 from random_player import RandomPlayer
 from newbie_player import NewbiePlayer
 from q_player import get_state, get_move
-from keras.models import Sequential
+from keras.models import Sequential, load_model
 from keras.layers.core import Dense, Activation
 from keras.optimizers import RMSprop
 
@@ -28,10 +28,12 @@ def init_model():
     return model
 
 
-exploration_epochs = 9000
-final_epochs = 1000
+exploration_epochs = 1
+final_epochs = 10000
 epochs = exploration_epochs + final_epochs
-gamma = 0.8
+gamma = 0.99
+trainer = RandomPlayer
+opponent = "RandomPlayer"
 initial_epsilon = 0.75
 final_epsilon = 1e-5
 epsilon = initial_epsilon
@@ -41,7 +43,7 @@ winners = []
 score0 = []
 score1 = []
 
-model = init_model()
+model = load_model("C:\\Users\\Laouen\\PycharmProjects\\Awale\\QPlayers\\qplayer_epochs50000_gamma0.99_opponentRandomPlayer.model")
 
 for epoch in range(epochs):
     if epoch % 100 == 0 and epoch != 0:
@@ -74,7 +76,7 @@ for epoch in range(epochs):
 
             old_state, old_move = state, move
         else:
-            move = RandomPlayer.get_move(Awale(board, score), player)
+            move = trainer.get_move(Awale(board, score), player)
 
         if can_play(board, score, player, move):
             board, new_score = play(board, score, player, move)
@@ -110,19 +112,24 @@ for epoch in range(epochs):
     score1.append(score[1])
 
     if moves_count >= max_count:
-        print("La partie est trop longue.")
+        print("La partie est trop longue (plus de 400 coups).")
 
-filename = "C:\\Users\\Laouen\\PycharmProjects\\Awale\\QPlayers\\qplayer_e{}_g{}.model".format(epochs, gamma)
+filename = "C:\\Users\\Laouen\\PycharmProjects\\Awale\\QPlayers\\qplayer_epochs{}_gamma{}_opponent{}.model".format(
+    epochs, gamma, opponent)
 model.save(filename)
 
 winners = numpy.array(winners)
 winners = winners[winners != -2]
 
-numpy.save("C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\winners_e{}_g{}.npy".format(epochs, gamma),
-           winners)
-numpy.save("C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\losses_e{}_g{}.npy".format(epochs, gamma),
-           losses)
-numpy.save("C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\score0_e{}_g{}.npy".format(epochs, gamma),
-           score0)
-numpy.save("C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\score1_e{}_g{}.npy".format(epochs, gamma),
-           score1)
+numpy.save(
+    "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\winners_epochs{}_gamma{}_opponent{}.npy".format(
+        epochs, gamma, opponent), winners)
+numpy.save(
+    "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\losses_epochs{}_gamma{}_opponent{}.npy".format(
+        epochs, gamma, opponent), losses)
+numpy.save(
+    "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\score0_epochs{}_gamma{}_opponent{}.npy".format(
+        epochs, gamma, opponent), score0)
+numpy.save(
+    "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\score1_epochs{}_gamma{}_opponent{}.npy".format(
+        epochs, gamma, opponent), score1)

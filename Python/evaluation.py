@@ -58,9 +58,10 @@ def evaluation2(awale, player):
     opponent_1_2 = eval_1_2(awale, 1 - player)  # nombre total de 1-2 chez l'autre (bon)
     player_krou = eval_krou(awale, player)  # présence d'un krou sur notre terrain (bon)
     opponent_krou = eval_krou(awale, 1 - player)  # présence d'un krou chez l'aversaire (mauvais)
-    rep = delta_score + 0.5 + (w[0] * opponent_1_2) + (w[1] * player_krou) - (w[0] * player_1_2) - (
-        w[1] * opponent_krou)
-    return rep
+
+    val = delta_score + 0.5 + w[0] * (opponent_1_2 - player_1_2) + w[1] * (player_krou - opponent_krou)
+
+    return val
 
 
 def attack_coef(awale, player):
@@ -84,19 +85,15 @@ def evaluation3(awale, player):
     :param player: numéro du joueur
     :return: valeur numérique de l'état du jeu
     """
-    d = 0.4
-    score_player = awale.score[player]
-    score_opponent = awale.score[1 - player]
-    delta_score = score_player - score_opponent
-    part_1_2 = 0.8
-    part_krou = 1 - part_1_2
-    c1 = (part_1_2 / 2) * (1 + attack_coef(score_player, score_opponent))
-    c2 = (part_krou / 2) * (1 + attack_coef(score_player, score_opponent))
-    c3 = (part_1_2 / 2) * (attack_coef(score_player, score_opponent) - 1)
-    c4 = (part_krou / 2) * (attack_coef(score_player, score_opponent) - 1)
+    w = [0.4, 0.1]
+    delta_score = awale.score[player] - awale.score[1 - player]
+    alpha = attack_coef(awale, player)
     player_1_2 = eval_1_2(awale, player)  # nombre total de 1-2 chez nous (mauvais)
     opponent_1_2 = eval_1_2(awale, 1 - player)  # nombre total de 1-2 chez l'autre (bon)
     player_krou = eval_krou(awale, player)  # présence d'un krou sur notre terrain (bon)
     opponent_krou = eval_krou(awale, 1 - player)  # présence d'un krou chez l'aversaire (mauvais)
-    rep = delta_score + (d * (c1 * opponent_1_2) + (c2 * player_krou) + (c3 * player_1_2) + (c4 * opponent_krou))
-    return rep
+
+    val = delta_score + 0.5 + w[0] * ((1 + alpha) * opponent_1_2 - (1 - alpha) * player_1_2) + w[1] * (
+        (1 + alpha) * player_krou - (1 - alpha) * opponent_krou)
+
+    return val
