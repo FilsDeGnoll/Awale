@@ -1,5 +1,5 @@
 from game import Game
-from awale import Awale
+from awale_oop import Awale
 from human_player import HumanPlayer
 from random_player import RandomPlayer
 from newbie_player import NewbiePlayer

@@ -1,4 +1,4 @@
-from awale import Awale
+from awale_oop import Awale
 
 
 def negamax(awale, depth, player, evaluation):

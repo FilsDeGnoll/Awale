@@ -1,5 +1,5 @@
 import numpy
-from main import can_play
+from awale_fun import can_play
 
 
 def get_state(board, player):

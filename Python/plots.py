@@ -53,8 +53,8 @@ legend.remove()
 l = [names[i] for i in range(len(names))]
 legend = fig.legend(lines, l, 'lower right')
 
-exploration_epochs = 40000
-exploitation_epochs = 0
+exploration_epochs = 20000
+exploitation_epochs = 12500
 epochs = exploration_epochs + exploitation_epochs
 gamma = [0.99]
 n = epochs // 25
@@ -86,9 +86,11 @@ for i in range(len(gamma)):
         winner1[j] = sum(w == 1) * 100 / n
         error[j] = sum(w == -3) * 100 / n
 
-    loss.plot(x, [numpy.array(losses[j * n:(j + 1) * n]).mean() for j in range(25)], "-v", color=colors[i])
+    p = len(losses) // 25
 
-    epsilon.plot(x, [numpy.array(epsilons[j * n:(j + 1) * n]).mean() for j in range(25)], "-v", color=colors[i])
+    loss.plot(x, [numpy.array(losses[j * p:(j + 1) * p]).mean() for j in range(25)], "-v", color=colors[i])
+
+    epsilon.plot(x, [numpy.array(epsilons[j * p:(j + 1) * p]).mean() for j in range(25)], "-v", color=colors[i])
 
     winner.plot(x, winner0, "-v", color=colors[i])
     winner.plot(x, winner1, "-o", color=colors[i])

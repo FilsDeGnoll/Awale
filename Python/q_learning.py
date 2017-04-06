@@ -1,8 +1,8 @@
 # Basé sur le tutoriel http://outlace.com/Reinforcement-Learning-Part-3/
 import numpy
 import random
-from awale import Awale
-from main import init_board, play, can_play, get_winner
+from awale_oop import Awale
+from awale_fun import init_board, will_starve, can_play, play, get_winner
 from random_player import RandomPlayer
 from newbie_player import NewbiePlayer
 from q_player import get_state, get_move
@@ -30,8 +30,8 @@ def init_model():
 
 model = init_model()
 
-exploration_epochs = 20000
-exploitation_epochs = 20000
+exploration_epochs = 5000
+exploitation_epochs = 5000
 epochs = exploration_epochs + exploitation_epochs
 gamma = 0.99
 trainer = RandomPlayer
@@ -45,6 +45,9 @@ epsilons = []
 winners = []
 score0 = []
 score1 = []
+
+erreurs_case_vide = 0
+erreurs_famine = 0
 
 for epoch in range(epochs):
     if epoch % 100 == 0 and epoch != 0:
@@ -85,6 +88,10 @@ for epoch in range(epochs):
             score = new_score
             winner = get_winner(board, score, winner, player)
         else:
+            if board[move] == 0:
+                erreurs_case_vide += 1
+            elif will_starve(board, score, player, move):
+                erreurs_famine += 1
             winner = -3
 
         winners.append(winner)
@@ -138,3 +145,6 @@ numpy.save(
 numpy.save(
     "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\score1_exploration_epochs{}_exploitation_epochs{}_gamma{}_opponent{}.npy".format(
         exploration_epochs, exploitation_epochs, gamma, opponent), score1)
+
+print("case vide = {}".format(erreurs_case_vide))
+print("famine = {}".format(erreurs_famine))
