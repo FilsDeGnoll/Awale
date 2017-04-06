@@ -28,9 +28,11 @@ def init_model():
     return model
 
 
-exploration_epochs = 1
-final_epochs = 10000
-epochs = exploration_epochs + final_epochs
+model = init_model()
+
+exploration_epochs = 20000
+exploitation_epochs = 20000
+epochs = exploration_epochs + exploitation_epochs
 gamma = 0.99
 trainer = RandomPlayer
 opponent = "RandomPlayer"
@@ -39,11 +41,10 @@ final_epsilon = 1e-5
 epsilon = initial_epsilon
 
 losses = []
+epsilons = []
 winners = []
 score0 = []
 score1 = []
-
-model = load_model("C:\\Users\\Laouen\\PycharmProjects\\Awale\\QPlayers\\qplayer_epochs50000_gamma0.99_opponentRandomPlayer.model")
 
 for epoch in range(epochs):
     if epoch % 100 == 0 and epoch != 0:
@@ -105,6 +106,7 @@ for epoch in range(epochs):
             Y = numpy.array([old_q_values])
             loss = model.train_on_batch(X, Y)
             losses.append(loss)
+            epsilons.append(epsilon)
 
         player = 1 - player
 
@@ -114,22 +116,25 @@ for epoch in range(epochs):
     if moves_count >= max_count:
         print("La partie est trop longue (plus de 400 coups).")
 
-filename = "C:\\Users\\Laouen\\PycharmProjects\\Awale\\QPlayers\\qplayer_epochs{}_gamma{}_opponent{}.model".format(
-    epochs, gamma, opponent)
+filename = "C:\\Users\\Laouen\\PycharmProjects\\Awale\\QPlayers\\qplayer_exploration_epochs{}_exploitation_epochs{}_gamma{}_opponent{}.model".format(
+    exploration_epochs, exploitation_epochs, gamma, opponent)
 model.save(filename)
 
 winners = numpy.array(winners)
 winners = winners[winners != -2]
 
 numpy.save(
-    "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\winners_epochs{}_gamma{}_opponent{}.npy".format(
-        epochs, gamma, opponent), winners)
+    "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\losses_exploration_epochs{}_exploitation_epochs{}_gamma{}_opponent{}.npy".format(
+        exploration_epochs, exploitation_epochs, gamma, opponent), losses)
 numpy.save(
-    "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\losses_epochs{}_gamma{}_opponent{}.npy".format(
-        epochs, gamma, opponent), losses)
+    "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\epsilons_exploration_epochs{}_exploitation_epochs{}_gamma{}_opponent{}.npy".format(
+        exploration_epochs, exploitation_epochs, gamma, opponent), epsilons)
 numpy.save(
-    "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\score0_epochs{}_gamma{}_opponent{}.npy".format(
-        epochs, gamma, opponent), score0)
+    "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\winners_exploration_epochs{}_exploitation_epochs{}_gamma{}_opponent{}.npy".format(
+        exploration_epochs, exploitation_epochs, gamma, opponent), winners)
 numpy.save(
-    "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\score1_epochs{}_gamma{}_opponent{}.npy".format(
-        epochs, gamma, opponent), score1)
+    "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\score0_exploration_epochs{}_exploitation_epochs{}_gamma{}_opponent{}.npy".format(
+        exploration_epochs, exploitation_epochs, gamma, opponent), score0)
+numpy.save(
+    "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\score1_exploration_epochs{}_exploitation_epochs{}_gamma{}_opponent{}.npy".format(
+        exploration_epochs, exploitation_epochs, gamma, opponent), score1)

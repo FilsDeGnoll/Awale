@@ -4,14 +4,19 @@ import numpy
 
 fig = plt.figure()
 loss = fig.add_subplot(221)
-winner = fig.add_subplot(222)
-score = fig.add_subplot(223)
+epsilon = fig.add_subplot(222)
+winner = fig.add_subplot(223)
+score = fig.add_subplot(224)
 legend = fig.legend([], [], 'lower right')
 fig.set_tight_layout(True)
 
 loss.set_title("Perte")
 loss.set_xlabel("époque")
 loss.set_ylabel("perte")
+
+epsilon.set_title("Epsilon")
+epsilon.set_xlabel("époque")
+epsilon.set_ylabel("epsilon")
 
 winner.set_title("Gagnant")
 winner.set_xlabel("époque")
@@ -48,7 +53,9 @@ legend.remove()
 l = [names[i] for i in range(len(names))]
 legend = fig.legend(lines, l, 'lower right')
 
-epochs = 10001
+exploration_epochs = 40000
+exploitation_epochs = 0
+epochs = exploration_epochs + exploitation_epochs
 gamma = [0.99]
 n = epochs // 25
 x = [i * n for i in range(25)]
@@ -57,18 +64,21 @@ winner1 = numpy.zeros(25)
 error = numpy.zeros(25)
 
 for i in range(len(gamma)):
-    winners = numpy.load(
-        "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\winners_epochs{}_gamma{}_opponent{}.npy".format(
-            epochs, gamma[i], opponent))
     losses = numpy.load(
-        "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\losses_epochs{}_gamma{}_opponent{}.npy".format(
-            epochs, gamma[i], opponent))
+        "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\losses_exploration_epochs{}_exploitation_epochs{}_gamma{}_opponent{}.npy".format(
+            exploration_epochs, exploitation_epochs, gamma[i], opponent))
+    epsilons = numpy.load(
+        "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\epsilons_exploration_epochs{}_exploitation_epochs{}_gamma{}_opponent{}.npy".format(
+            exploration_epochs, exploitation_epochs, gamma[i], opponent))
+    winners = numpy.load(
+        "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\winners_exploration_epochs{}_exploitation_epochs{}_gamma{}_opponent{}.npy".format(
+            exploration_epochs, exploitation_epochs, gamma[i], opponent))
     score0 = numpy.load(
-        "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\score0_epochs{}_gamma{}_opponent{}.npy".format(
-            epochs, gamma[i], opponent))
+        "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\score0_exploration_epochs{}_exploitation_epochs{}_gamma{}_opponent{}.npy".format(
+            exploration_epochs, exploitation_epochs, gamma[i], opponent))
     score1 = numpy.load(
-        "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\score1_epochs{}_gamma{}_opponent{}.npy".format(
-            epochs, gamma[i], opponent))
+        "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\score1_exploration_epochs{}_exploitation_epochs{}_gamma{}_opponent{}.npy".format(
+            exploration_epochs, exploitation_epochs, gamma[i], opponent))
 
     for j in range(25):
         w = winners[j * n:(j + 1) * n]
@@ -77,6 +87,8 @@ for i in range(len(gamma)):
         error[j] = sum(w == -3) * 100 / n
 
     loss.plot(x, [numpy.array(losses[j * n:(j + 1) * n]).mean() for j in range(25)], "-v", color=colors[i])
+
+    epsilon.plot(x, [numpy.array(epsilons[j * n:(j + 1) * n]).mean() for j in range(25)], "-v", color=colors[i])
 
     winner.plot(x, winner0, "-v", color=colors[i])
     winner.plot(x, winner1, "-o", color=colors[i])
