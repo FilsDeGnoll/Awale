@@ -27,7 +27,7 @@ score.set_title("Score moyen")
 score.set_xlabel("époque")
 score.set_ylabel("score")
 
-opponent = "RandomPlayer"
+opponent = "NegabetaPlayer_depth3_eval2"
 labels = ["QPlayer", opponent, "Erreur"]
 markers = ["v", "o", "P"]
 colors = ["black", "black", "black"]
@@ -53,8 +53,8 @@ legend.remove()
 l = [names[i] for i in range(len(names))]
 legend = fig.legend(lines, l, 'lower right')
 
-exploration_epochs = 20000
-exploitation_epochs = 12500
+exploration_epochs = 15000
+exploitation_epochs = 5000
 epochs = exploration_epochs + exploitation_epochs
 gamma = [0.99]
 n = epochs // 25

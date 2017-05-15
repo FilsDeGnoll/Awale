@@ -5,7 +5,9 @@ from awale_oop import Awale
 from awale_fun import init_board, will_starve, can_play, play, get_winner
 from random_player import RandomPlayer
 from newbie_player import NewbiePlayer
+from negabeta_player import NegabetaPlayer
 from q_player import get_state, get_move
+from evaluation import evaluation2
 from keras.models import Sequential, load_model
 from keras.layers.core import Dense, Activation
 from keras.optimizers import RMSprop
@@ -30,12 +32,12 @@ def init_model():
 
 model = init_model()
 
-exploration_epochs = 5000
+exploration_epochs = 15000
 exploitation_epochs = 5000
 epochs = exploration_epochs + exploitation_epochs
 gamma = 0.99
-trainer = RandomPlayer
-opponent = "RandomPlayer"
+trainer = NegabetaPlayer(3, evaluation2)
+opponent = "NegabetaPlayer_depth3_eval2"
 initial_epsilon = 0.75
 final_epsilon = 1e-5
 epsilon = initial_epsilon
