@@ -32,15 +32,16 @@ def init_model():
 
 model = init_model()
 
-exploration_epochs = 15000
+exploration_epochs = 20000
 exploitation_epochs = 5000
 epochs = exploration_epochs + exploitation_epochs
 gamma = 0.99
-trainer = NegabetaPlayer(3, evaluation2)
-opponent = "NegabetaPlayer_depth3_eval2"
+trainer = NewbiePlayer
+opponent = "NewbiePlayer"
 initial_epsilon = 0.75
 final_epsilon = 1e-5
-epsilon = initial_epsilon
+# epsilon = initial_epsilon
+epsilon = 0.1
 
 losses = []
 epsilons = []
@@ -55,10 +56,10 @@ for epoch in range(epochs):
     if epoch % 100 == 0 and epoch != 0:
         print("epoch = {}".format(epoch))
 
-    if epsilon > final_epsilon:
-        epsilon -= (initial_epsilon - final_epsilon) / exploration_epochs
-    else:
-        epsilon = final_epsilon
+    # if epsilon > final_epsilon:
+    #     epsilon -= (initial_epsilon - final_epsilon) / exploration_epochs
+    # else:
+    #     epsilon = final_epsilon
 
     moves_count = 0
     max_count = 400

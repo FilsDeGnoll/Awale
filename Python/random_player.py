@@ -11,10 +11,10 @@ class RandomPlayer:
         """
         minmove = player * 6
         maxmove = (1 + player) * 6
-        move = -1
-
-        # TODO: choisir parmi les coups possibles ?
-        while not awale.can_play(player, move):
-            move = random.randint(minmove, maxmove)
+        moves = []
+        for i in range(minmove, maxmove):
+            if awale.can_play(player, i):
+                moves.append(i)
+        move = random.choice(moves)
 
         return move
