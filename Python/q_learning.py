@@ -32,16 +32,16 @@ def init_model():
 
 model = init_model()
 
-exploration_epochs = 20000
-exploitation_epochs = 5000
+exploration_epochs = 19000
+exploitation_epochs = 1000
 epochs = exploration_epochs + exploitation_epochs
 gamma = 0.99
-trainer = NewbiePlayer
-opponent = "NewbiePlayer"
+trainer = RandomPlayer
+opponent = "RandomPlayer"
 initial_epsilon = 0.75
 final_epsilon = 1e-5
-# epsilon = initial_epsilon
-epsilon = 0.1
+epsilon = initial_epsilon
+# epsilon = 0.5
 
 losses = []
 epsilons = []
@@ -56,10 +56,10 @@ for epoch in range(epochs):
     if epoch % 100 == 0 and epoch != 0:
         print("epoch = {}".format(epoch))
 
-    # if epsilon > final_epsilon:
-    #     epsilon -= (initial_epsilon - final_epsilon) / exploration_epochs
-    # else:
-    #     epsilon = final_epsilon
+    if epsilon > final_epsilon:
+        epsilon -= (initial_epsilon - final_epsilon) / exploration_epochs
+    else:
+        epsilon = final_epsilon
 
     moves_count = 0
     max_count = 400
@@ -107,7 +107,7 @@ for epoch in range(epochs):
 
             if winner == -2:
                 new_state = get_state(board, 0)
-                [new_q_values] = model.predict([numpy.array([new_state])])
+                [new_q_values] = model.predict(numpy.array([new_state]))
                 old_q_values[old_move] = reward + gamma * max(new_q_values)
             else:
                 old_q_values[old_move] = reward

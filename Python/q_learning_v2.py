@@ -4,10 +4,10 @@ from awale_fun import init_board, will_starve, can_play, play, get_winner
 from q_player import get_state, get_move
 from keras.models import load_model
 
-n = 10000
+n = 10007
 model = load_model("C:\\Users\\Laouen\\PycharmProjects\\Awale\\QPlayers\\qplayer_n{}.model".format(n))
 
-epochs = 20000
+epochs = 10000
 gamma = 0.99
 epsilon = 0.1
 
@@ -70,9 +70,9 @@ for epoch in range(epochs):
         [old_q_values] = model.predict([numpy.array([old_state])])
 
         if winner == -2:
-            new_state = get_state(board, 0)
-            [new_q_values] = model.predict([numpy.array([new_state])])
-            old_q_values[old_move] = reward - gamma * max(new_q_values)
+            new_state = get_state(board, player)
+            [new_q_values] = model.predict(numpy.array([new_state]))
+            old_q_values[old_move - player * 6] = reward - gamma * max(new_q_values)
         else:
             old_q_values[old_move] = reward
 
@@ -89,23 +89,28 @@ for epoch in range(epochs):
     if moves_count >= max_count:
         print("La partie est trop longue (plus de 400 coups).")
 
-filename = "C:\\Users\\Laouen\\PycharmProjects\\Awale\\QPlayers\\qplayer_epochs{}_gamma{}.model".format(epochs, gamma)
+filename = "C:\\Users\\Laouen\\PycharmProjects\\Awale\\QPlayers\\qplayer_epochs{}_gamma{}_epsilon{}.model".format(
+    epochs, gamma, epsilon)
 model.save(filename)
 
 winners = numpy.array(winners)
 winners = winners[winners != -2]
 
 numpy.save(
-    "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\losses_epochs{}_gamma{}.npy".format(epochs, gamma),
+    "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\losses_epochs{}_gamma{}_epsilon{}.npy".format(
+        epochs, gamma, epsilon),
     losses)
 numpy.save(
-    "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\winners_epochs{}_gamma{}.npy".format(epochs, gamma),
+    "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\winners_epochs{}_gamma{}_epsilon{}.npy".format(
+        epochs, gamma, epsilon),
     winners)
 numpy.save(
-    "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\score0_epochs{}_gamma{}.npy".format(epochs, gamma),
+    "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\score0_epochs{}_gamma{}_epsilon{}.npy".format(
+        epochs, gamma, epsilon),
     score0)
 numpy.save(
-    "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\score1_epochs{}_gamma{}.npy".format(epochs, gamma),
+    "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\score1_epochs{}_gamma{}_epsilon{}.npy".format(
+        epochs, gamma, epsilon),
     score1)
 
 print("case vide = {}".format(erreurs_case_vide))

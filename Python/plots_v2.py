@@ -47,8 +47,9 @@ legend.remove()
 l = [names[i] for i in range(len(names))]
 legend = fig.legend(lines, l, 'lower right')
 
-epochs = 20000
+epochs = 10000
 gamma = [0.99]
+epsilon = 0.1
 n = epochs // 25
 x = [i * n for i in range(25)]
 winner0 = numpy.zeros(25)
@@ -57,13 +58,17 @@ error = numpy.zeros(25)
 
 for i in range(len(gamma)):
     losses = numpy.load(
-        "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\losses_epochs{}_gamma{}.npy".format(epochs, gamma[i]))
+        "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\losses_epochs{}_gamma{}_epsilon{}.npy".format(
+            epochs, gamma[i], epsilon))
     winners = numpy.load(
-        "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\winners_epochs{}_gamma{}.npy".format(epochs, gamma[i]))
+        "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\winners_epochs{}_gamma{}_epsilon{}.npy".format(
+            epochs, gamma[i], epsilon))
     score0 = numpy.load(
-        "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\score0_epochs{}_gamma{}.npy".format(epochs, gamma[i]))
+        "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\score0_epochs{}_gamma{}_epsilon{}.npy".format(
+            epochs, gamma[i], epsilon))
     score1 = numpy.load(
-        "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\score1_epochs{}_gamma{}.npy".format(epochs, gamma[i]))
+        "C:\\Users\\Laouen\\PycharmProjects\\Awale\\TableauxQ-learning\\score1_epochs{}_gamma{}_epsilon{}.npy".format(
+            epochs, gamma[i], epsilon))
 
     for j in range(25):
         w = winners[j * n:(j + 1) * n]
@@ -83,3 +88,4 @@ for i in range(len(gamma)):
     score.plot(x, [numpy.array(score1[j * n:(j + 1) * n]).mean() for j in range(25)], "-o", color=colors[i])
 
 plt.show()
+

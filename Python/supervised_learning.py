@@ -31,7 +31,7 @@ model = init_model()
 n = 0
 
 while n < 10000:
-
+    print(n)
     awale = Awale()
     players = [NegabetaPlayer(5, evaluation2), NegabetaPlayer(4, evaluation2)]
     moves_count = 0
@@ -49,18 +49,18 @@ while n < 10000:
                 if awale.can_play(player, i):
                     moves.append(i)
             move = random.choice(moves)
-
-        move = players[player].get_move(awale, player)
-
-        if awale.can_play(player, move):
+        else:
+            move = players[player].get_move(awale, player)
             if random.random() < 0.1:
                 n += 1
                 state = get_state(awale.board, player)
                 q_values = numpy.zeros(6)
-                q_values[move] = 1
+                q_values[move - player * 6] = 1
                 X = numpy.array([state])
                 Y = numpy.array([q_values])
                 model.train_on_batch(X, Y)
+
+        if awale.can_play(player, move):
             awale.play(player, move)
             awale.check_winner(player)
         else:

@@ -54,7 +54,7 @@ l = [names[i] for i in range(len(names))]
 legend = fig.legend(lines, l, 'lower right')
 
 exploration_epochs = 20000
-exploitation_epochs = 5000
+exploitation_epochs = 0
 epochs = exploration_epochs + exploitation_epochs
 gamma = [0.99]
 n = epochs // 25
