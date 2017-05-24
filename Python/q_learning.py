@@ -21,6 +21,12 @@ def init_model():
     model.add(Dense(512, init='lecun_uniform'))
     model.add(Activation('relu'))
 
+    model.add(Dense(512, init='lecun_uniform'))
+    model.add(Activation('relu'))
+
+    model.add(Dense(512, init='lecun_uniform'))
+    model.add(Activation('relu'))
+
     model.add(Dense(6, init='lecun_uniform'))
     model.add(Activation('linear'))
 
@@ -32,8 +38,8 @@ def init_model():
 
 model = init_model()
 
-exploration_epochs = 19000
-exploitation_epochs = 1000
+exploration_epochs = 15001
+exploitation_epochs = 0
 epochs = exploration_epochs + exploitation_epochs
 gamma = 0.99
 trainer = RandomPlayer

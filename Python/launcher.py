@@ -11,7 +11,7 @@ from q_player import QPlayer, get_state
 from evaluation import *
 from keras.models import load_model
 
-model = load_model("C:\\Users\\Laouen\\PycharmProjects\\Awale\\QPlayers\\qplayer_exploration_epochs20000_exploitation_epochs0_gamma0.99_opponentNewbiePlayer.model")
+model = load_model("C:\\Users\\Laouen\\PycharmProjects\\Awale\\QPlayers\\qplayer_exploration_epochs15001_exploitation_epochs0_gamma0.99_opponentRandomPlayer.model")
 w = [0, 0, 0]
 
 for i in range(1000):
@@ -33,3 +33,10 @@ game.display_result()
 game = Game(NewbiePlayer, QPlayer(model), debug=False)
 game.new_game()
 game.display_result()
+
+board = numpy.array([1, 8, 0, 6, 4, 1, 0, 1, 4, 5, 2, 0])
+state = get_state(board, 0)
+north = board[6:12][::-1]
+south = board[0:6]
+print(numpy.array([north, south]))
+print(model.predict(numpy.array([state])))

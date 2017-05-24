@@ -1,11 +1,32 @@
 import numpy
 import random
+
 from awale_fun import init_board, will_starve, can_play, play, get_winner
 from q_player import get_state, get_move
-from keras.models import load_model
+from keras.models import load_model, Sequential
+from keras.layers.core import Dense, Activation
+from keras.optimizers import RMSprop
 
-n = 10007
-model = load_model("C:\\Users\\Laouen\\PycharmProjects\\Awale\\QPlayers\\qplayer_n{}.model".format(n))
+def init_model():
+    model = Sequential()
+    model.add(Dense(512, init='lecun_uniform', input_shape=(32 * 12,)))
+    model.add(Activation('relu'))
+
+    model.add(Dense(512, init='lecun_uniform'))
+    model.add(Activation('relu'))
+
+    model.add(Dense(512, init='lecun_uniform'))
+    model.add(Activation('relu'))
+
+    model.add(Dense(6, init='lecun_uniform'))
+    model.add(Activation('linear'))
+
+    rms = RMSprop()
+    model.compile(loss='mse', optimizer=rms)
+
+    return model
+
+model = init_model()
 
 epochs = 10000
 gamma = 0.99
@@ -45,6 +66,7 @@ for epoch in range(epochs):
             for i in range(minmove, maxmove):
                 if can_play(board, score, player, i):
                     moves.append(i)
+
             move = random.choice(moves)
         else:
             move = get_move(state, model)
@@ -65,7 +87,7 @@ for epoch in range(epochs):
 
         winners.append(winner)
 
-        reward = {-3: -1, -2: int(delta_score[0] - delta_score[1] > 0), -1: 0, 0: 0, 1: 0}[winner]
+        reward = {-3: -24, -2: delta_score[0] - delta_score[1], -1: 0, 0: 0, 1: 0}[winner]
 
         [old_q_values] = model.predict([numpy.array([old_state])])
 
