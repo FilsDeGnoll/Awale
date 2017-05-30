@@ -1,5 +1,5 @@
 import numpy
-from Python.awale_fun import can_play
+from awale_fun import can_play
 
 def reverse_board(board):
     return numpy.array([board[(i + 6) % 12] for i in range(12)])
