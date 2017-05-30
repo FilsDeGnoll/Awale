@@ -11,7 +11,7 @@ from q_player import QPlayer, get_state
 from evaluation import *
 from keras.models import load_model
 
-model = load_model("C:\\Users\\Laouen\\PycharmProjects\\Awale\\QPlayers\\qplayer_exploration_epochs15001_exploitation_epochs0_gamma0.99_opponentRandomPlayer.model")
+model = load_model("C:\\Users\\Laouen\\PycharmProjects\\Awale\\QPlayers\\qplayer_epochs10000_gamma0.99_epsilon0.1.model")
 w = [0, 0, 0]
 
 for i in range(1000):

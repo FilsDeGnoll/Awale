@@ -1,4 +1,4 @@
-# Basé sur le tutoriel http://outlace.com/Reinforcement-Learning-Part-3/
+# Basé sur le tutoriel outlace.com/rlpart3.html
 import numpy
 import random
 from awale_oop import Awale
@@ -38,7 +38,7 @@ def init_model():
 
 model = init_model()
 
-exploration_epochs = 15001
+exploration_epochs = 1000
 exploitation_epochs = 0
 epochs = exploration_epochs + exploitation_epochs
 gamma = 0.99
@@ -47,13 +47,18 @@ opponent = "RandomPlayer"
 initial_epsilon = 0.75
 final_epsilon = 1e-5
 epsilon = initial_epsilon
-# epsilon = 0.5
+batch_size = 100
+buffer = 200
+replay = []
+h = 0
+
 
 losses = []
 epsilons = []
 winners = []
 score0 = []
 score1 = []
+moves_counts = []
 
 erreurs_case_vide = 0
 erreurs_famine = 0
@@ -80,10 +85,16 @@ for epoch in range(epochs):
         moves_count += 1
 
         if player == 0:
-            state = get_state(board, player)
+            state = get_state(board)
 
             if random.random() < epsilon:
-                move = numpy.random.randint(6)
+                moves = []
+
+                for i in range(6):
+                    if can_play(board, score, 0, i):
+                        moves.append(i)
+
+                move = random.choice(moves)
             else:
                 move = get_move(state, model)
 
@@ -109,10 +120,10 @@ for epoch in range(epochs):
             reward = {-3: -100, -2: delta_score[0] - delta_score[1], -1: 0, 0: 0, 1: 0}[winner]
 
         if player == 1 or winner != -2:
-            [old_q_values] = model.predict([numpy.array([old_state])])
+            [old_q_values] = model.predict(numpy.array([old_state]))
 
             if winner == -2:
-                new_state = get_state(board, 0)
+                new_state = get_state(board)
                 [new_q_values] = model.predict(numpy.array([new_state]))
                 old_q_values[old_move] = reward + gamma * max(new_q_values)
             else:
@@ -128,6 +139,7 @@ for epoch in range(epochs):
 
     score0.append(score[0])
     score1.append(score[1])
+    moves_counts.append(moves_count)
 
     if moves_count >= max_count:
         print("La partie est trop longue (plus de 400 coups).")
@@ -157,3 +169,10 @@ numpy.save(
 
 print("case vide = {}".format(erreurs_case_vide))
 print("famine = {}".format(erreurs_famine))
+
+import matplotlib.pyplot as plt
+plt.subplot(211)
+plt.plot(range(len(losses)), losses)
+plt.subplot(212)
+plt.plot(range(len(moves_counts)), moves_counts)
+plt.show()
