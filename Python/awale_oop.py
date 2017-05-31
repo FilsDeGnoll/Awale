@@ -39,6 +39,7 @@ class Awale:
 
         while seeds > 0:
             i += 1
+
             if i % 12 != move:
                 new_board[i % 12] += 1
                 seeds -= 1
@@ -60,6 +61,7 @@ class Awale:
         while minpick <= i < maxpick and 2 <= new_board[i] <= 3:
             new_score[player] += new_board[i]
             new_board[i] = 0
+
             i -= 1
 
         return new_board, new_score
@@ -106,11 +108,9 @@ class Awale:
         maxpick = (2 - player) * 6
 
         if self.board[minpick:maxpick].sum() == 0:
-
             return minmove <= move < maxmove and self.board[move] != 0 and (
                 not self.will_starve(player, move) or self.cannot_feed(player))
         else:
-
             return minmove <= move < maxmove and self.board[move] != 0
 
     def play(self, player, move):

@@ -1,3 +1,5 @@
+from awale_fun import get_possible_moves
+
 class NewbiePlayer:
     @staticmethod
     def best_move(awale, player):
@@ -6,14 +8,7 @@ class NewbiePlayer:
         :param player: numéro du joueur
         :return: meilleur coup
         """
-        minmove = player * 6
-        maxmove = (1 + player) * 6
-        possible_moves = []
-
-        for i in range(minmove, maxmove):
-            if awale.can_play(player, i):
-                possible_moves.append(i)
-
+        possible_moves = get_possible_moves(awale.board, player)
         best_move = possible_moves[0]
         best_score = awale.pick(player, best_move)[1][player]
 

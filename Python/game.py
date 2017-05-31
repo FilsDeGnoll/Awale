@@ -63,9 +63,12 @@ class Game:
         :return: aucun retour
         """
         print("La partie s'est terminée en {} coups.".format(self.moves_count))
+
         if self.awale.score[0] < 24 and self.awale.score[1] < 24:
             self.awale.get_seeds()
+
         self.display_score()
+
         if self.awale.score[0] > self.awale.score[1]:
             print("Le joueur 0 a gagné !\n")
         elif self.awale.score[0] < self.awale.score[1]:
@@ -97,6 +100,7 @@ class Game:
                                                                                                 maxmove - 1))
 
             move = self.players[player].get_move(self.awale, player)
+
             if self.awale.can_play(player, move):
                 self.awale.play(player, move)
                 self.awale.check_winner(player)
@@ -105,6 +109,7 @@ class Game:
             else:
                 self.display_board()
                 raise ValueError("Erreur! La case {} ne peut pas être jouée.".format(move))
+
             player = 1 - player
 
         if self.debug:

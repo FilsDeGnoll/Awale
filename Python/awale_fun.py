@@ -1,4 +1,5 @@
 import numpy
+from random import choice
 
 
 def init_board():
@@ -24,6 +25,7 @@ def deal(board, move):
 
     while seeds > 0:
         i += 1
+
         if i % 12 != move:
             new_board[i % 12] += 1
             seeds -= 1
@@ -48,29 +50,29 @@ def pick(board, score, player, move):
     while minpick <= i < maxpick and 2 <= new_board[i] <= 3:
         new_score[player] += new_board[i]
         new_board[i] = 0
+
         i -= 1
 
     return new_board, new_score
 
 
-def will_starve(board, score, player, move):
+def will_starve(board, player, move):
     """
     Vérifie si le joueur va affamer l'adversaire.
     :param board: plateau
-    :param score: score
     :param player: numéro du joueur
     :param move: indice de la case à jouer
     :return: "va affamer l'adversaire"
     """
     minpick = (1 - player) * 6
     maxpick = (2 - player) * 6
-    new_board = pick(board, score, player, move)[0]
+    new_board = pick(board, [0, 0], player, move)[0]
     starving = new_board[minpick:maxpick].sum() == 0
 
     return starving
 
 
-def cannot_feed(board, score, player):
+def cannot_feed(board, player):
     """
     Vérifie si le joueur ne peut pas nourrir l'adversaire.
     :param board: plateau
@@ -83,12 +85,12 @@ def cannot_feed(board, score, player):
     cannot_feed = True
 
     for i in range(minmove, maxmove):
-        cannot_feed = cannot_feed and will_starve(board, score, player, i)
+        cannot_feed = cannot_feed and will_starve(board, player, i)
 
     return cannot_feed
 
 
-def can_play(board, score, player, move):
+def can_play(board, player, move):
     """
     Vérifie si le coup indiqué est valide.
     :param board: plateau
@@ -103,11 +105,9 @@ def can_play(board, score, player, move):
     maxpick = (2 - player) * 6
 
     if board[minpick:maxpick].sum() == 0:
-
         return minmove <= move < maxmove and board[move] != 0 and (
-            not will_starve(board, score, player, move) or cannot_feed(board, score, player))
+            not will_starve(board, player, move) or cannot_feed(board, player))
     else:
-
         return minmove <= move < maxmove and board[move] != 0
 
 
@@ -118,7 +118,7 @@ def play(board, score, player, move):
     :param move: indice de la case à jouer
     :return: aucun retour
     """
-    if will_starve(board, score, player, move):
+    if will_starve(board, player, move):
         new_board = deal(board, move)[0]
         board = new_board
     else:
@@ -160,3 +160,22 @@ def get_winner(board, score, winner, player):
             winner = 1 - player
 
     return winner
+
+
+def get_possible_moves(board, player):
+    minmove = player * 6
+    maxmove = (1 + player) * 6
+    possible_moves = []
+
+    for i in range(minmove, maxmove):
+        if can_play(board, player, i):
+            possible_moves.append(i)
+
+    return possible_moves
+
+
+def get_random_move(board, player):
+    possible_moves = get_possible_moves(board, player)
+    move = choice(possible_moves)
+
+    return move
