@@ -41,12 +41,14 @@ def init_model():
 
 model = init_model()
 
-epochs = 1000
+epochs = 500
 gamma = 0.9
 epsilon = 0.1
 batch_size = 256
 memory_size = 8196
 memory = deque()
+trainer = False
+
 get_state = get_state1
 
 losses = []
@@ -106,7 +108,7 @@ for epoch in range(epochs):
         state = get_state(board)
 
         # Calcul du coup à jouer
-        if player == 1:
+        if player == 1 and trainer:
             move = NewbiePlayer().get_move(Awale(board), 0)
         elif random.random() < epsilon:
             move = get_random_move(board, player)
@@ -132,6 +134,7 @@ for epoch in range(epochs):
         if player == 0:
             memory.append((state, move, new_state, reward, terminal))
 
+        # Renversement du plateau
         board = reverse_board(board)
         player = 1 - player
 
@@ -144,7 +147,7 @@ for epoch in range(epochs):
         print("La partie est trop longue (plus de 400 coups).")
 
 date = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-parameters = "-gamma-{}-epsilon-{}-epochs{}-".format(gamma, epsilon, epochs)
+parameters = "-gamma-{}-epsilon-{}-epochs-{}-".format(gamma, epsilon, epochs)
 
 directory = "C:\\Users\\Laouen\\PycharmProjects\\Awale\\QPlayers\\"
 filename = directory + "qplayer" + parameters + date + ".model"
