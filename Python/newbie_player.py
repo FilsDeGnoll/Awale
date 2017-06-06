@@ -26,9 +26,6 @@ class NewbiePlayer:
         :param player: numéro du joueur
         :return: indice de la case choisie par le joueur 
         """
-        move = -1
-
-        while not awale.can_play(player, move):
-            move = NewbiePlayer.best_move(awale, player)
+        move = NewbiePlayer.best_move(awale, player)
 
         return move

@@ -9,6 +9,6 @@ class RandomPlayer:
         :param player: numéro du joueur
         :return: indice de la case choisie par le joueur
         """
-        move = get_random_move(awale.board, awale.score, player)
+        move = get_random_move(awale.board, player)
 
         return move

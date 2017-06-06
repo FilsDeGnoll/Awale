@@ -39,10 +39,10 @@ class QPlayer:
         else:
             r_board = board
 
-        state = get_state1(r_board)
+        state = get_state2(r_board)
         move = get_move(state, self.model) + 6 * player
 
-        if can_play(board, score, player, move):
+        if can_play(board, player, move):
             return move
         else:
             raise ValueError("Erreur! La case {} ne peut pas être jouée.".format(move))

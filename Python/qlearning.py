@@ -4,6 +4,7 @@ import random
 from datetime import datetime
 from awale_fun import *
 from awale_oop import Awale
+from human_player import HumanPlayer
 from newbie_player import NewbiePlayer
 from q_player import *
 from keras.models import Sequential
@@ -41,7 +42,7 @@ def init_model():
 
 model = init_model()
 
-epochs = 500
+epochs = 20000
 gamma = 0.9
 epsilon = 0.1
 batch_size = 256
@@ -49,7 +50,7 @@ memory_size = 8196
 memory = deque()
 trainer = False
 
-get_state = get_state1
+get_state = get_state2
 
 losses = []
 winners = []
@@ -108,12 +109,13 @@ for epoch in range(epochs):
         state = get_state(board)
 
         # Calcul du coup à jouer
-        if player == 1 and trainer:
+        if trainer and player == 1:
             move = NewbiePlayer().get_move(Awale(board), 0)
-        elif random.random() < epsilon:
-            move = get_random_move(board, player)
         else:
-            move = get_move(state, model)
+            if random.random() < epsilon:
+                move = get_random_move(board, 0)
+            else:
+                move = get_move(state, model)
 
         # Le coup est joué
         if can_play(board, 0, move):

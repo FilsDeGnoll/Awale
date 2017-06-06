@@ -8,12 +8,12 @@ ylabels = ["Perte", "Score moyen", "Nombre de coups moyen pour finir une partie"
 
 gamma = 0.9
 epsilon = 0.1
-epochs = 500
+epochs = 20000
 n = epochs // 25
 x = [i * n for i in range(25)]
 
 parameters = "-gamma-{}-epsilon-{}-epochs-{}-".format(gamma, epsilon, epochs)
-date = "2017-06-01-13-07-52"
+date = "2017-06-03-16-52-32"
 
 for i in range(len(names)):
     filename = filename = directory + names[i] + parameters + date + ".npy"
