@@ -19,7 +19,7 @@ def init_model():
 
     model = Sequential()
 
-    model.add(Dense(512, input_dim=48 * 12, init="lecun_uniform"))
+    model.add(Dense(512, input_dim=12 * 48, init="lecun_uniform"))
     model.add(Activation('relu'))
 
     model.add(Dense(512, init="lecun_uniform"))
@@ -43,7 +43,7 @@ def init_model():
 model = init_model()
 
 # Paramètres de l'entraînement
-epochs = 100000
+epochs = 10000
 gamma = 0.9
 epsilon = 0.1
 batch_size = 512
@@ -65,7 +65,7 @@ for epoch in range(epochs):
     if len(memory) > batch_size:
         batch = random.sample(memory, batch_size)
 
-        X = numpy.zeros((batch_size, 48 * 12))
+        X = numpy.zeros((batch_size, 12 * 48))
         Y = numpy.zeros((batch_size, 6))
 
         old_states = numpy.array([b[0] for b in batch])
@@ -93,7 +93,7 @@ for epoch in range(epochs):
 
     # Initialisation de l'environnement
     moves_count = 0
-    max_count = 400
+    max_count = 1000
     board = init_board()
     score = 0
     winner = -2
@@ -139,7 +139,7 @@ for epoch in range(epochs):
     moves_counts.append(moves_count)
 
     if moves_count >= max_count:
-        print("La partie est trop longue (plus de 400 coups).")
+        print("La partie est trop longue (plus de {} coups).".format(max_count))
 
 date = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
 parameters = "-gamma-{}-epsilon-{}-epochs-{}-".format(gamma, epsilon, epochs)
