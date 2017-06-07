@@ -1,16 +1,15 @@
-import numpy
 import random
-
-from datetime import datetime
-from awale_fun import *
-from awale_oop import Awale
-from human_player import HumanPlayer
-from newbie_player import NewbiePlayer
-from q_player import *
-from keras.models import Sequential
-from keras.layers.core import Dense, Activation
-from keras.optimizers import RMSprop
 from collections import deque
+from datetime import datetime
+
+import numpy
+from keras.layers.core import Dense, Activation
+from keras.models import Sequential
+from keras.optimizers import RMSprop
+
+from awale_fun import init_board, get_random_move, can_play, play, get_winner
+from q_player import get_state, get_move, reverse_board
+
 
 def init_model():
     """
@@ -40,23 +39,23 @@ def init_model():
 
     return model
 
+
 model = init_model()
 
-epochs = 20000
+# Paramètres de l'entraînement
+epochs = 100000
 gamma = 0.9
 epsilon = 0.1
-batch_size = 256
-memory_size = 8196
+batch_size = 512
+memory_size = 25000
 memory = deque()
-trainer = False
-
-get_state = get_state2
 
 losses = []
 winners = []
 scores = []
 moves_counts = []
 
+# Lancement de l'entraînement
 for epoch in range(epochs):
     if epoch % 100 == 0:
         print("epoch = {}".format(epoch))
@@ -92,13 +91,12 @@ for epoch in range(epochs):
 
     losses.append(loss)
 
-    # Initialisation environnement
+    # Initialisation de l'environnement
     moves_count = 0
     max_count = 400
     board = init_board()
     score = 0
     winner = -2
-    player = 0
 
     reward = None
 
@@ -109,13 +107,10 @@ for epoch in range(epochs):
         state = get_state(board)
 
         # Calcul du coup à jouer
-        if trainer and player == 1:
-            move = NewbiePlayer().get_move(Awale(board), 0)
+        if random.random() < epsilon:
+            move = get_random_move(board, 0)
         else:
-            if random.random() < epsilon:
-                move = get_random_move(board, 0)
-            else:
-                move = get_move(state, model)
+            move = get_move(state, model)
 
         # Le coup est joué
         if can_play(board, 0, move):
@@ -133,12 +128,10 @@ for epoch in range(epochs):
 
         if len(memory) == memory_size:
             memory.popleft()
-        if player == 0:
-            memory.append((state, move, new_state, reward, terminal))
+        memory.append((state, move, new_state, reward, terminal))
 
         # Renversement du plateau
         board = reverse_board(board)
-        player = 1 - player
 
         winners.append(winner)
 
@@ -166,4 +159,4 @@ names = ["losses", "winners", "scores", "moves_counts"]
 
 for i in range(len(arrays)):
     filename = directory + names[i] + parameters + date + ".npy"
-    numpy.save(filename,arrays[i])
+    numpy.save(filename, arrays[i])
