@@ -143,8 +143,7 @@ def get_seeds(board, score):
 
 def get_winner(board, score, winner, player):
     """
-    Vérifie si la partie est terminée : winner vaut -2 si la partie n'est pas terminée, -1 s'il y a égalité ou le numéro
-    du gagnant sinon.
+    Vérifie si la partie est terminée : winner vaut -2 si la partie n'est pas terminée ou le numéro du gagnant sinon.
     :param board: plateau
     :param score: score
     :param winner: numéro du gagnant ou -2 si la partie n'est pas terminée
@@ -163,6 +162,11 @@ def get_winner(board, score, winner, player):
 
 
 def get_possible_moves(board, player):
+    """
+    :param board: plateau
+    :param player: numéro du joueur
+    :return: liste des coups possibles
+    """
     minmove = player * 6
     maxmove = (1 + player) * 6
     possible_moves = []
@@ -175,6 +179,11 @@ def get_possible_moves(board, player):
 
 
 def get_random_move(board, player):
+    """
+    :param board: plateau
+    :param player: numéro du joueur
+    :return: coup aléatoire valide
+    """
     possible_moves = get_possible_moves(board, player)
     move = choice(possible_moves)
 

@@ -19,7 +19,11 @@ filename = directory + "qplayer" + parameters + date + ".model"
 
 model = load_model(filename)
 
-w = [0, 0, 0]
+victoires = 0
+defaites = 0
+egalites = 0
+depassements = 0
+erreurs = 0
 
 for i in range(1000):
     if i % 100 == 0:
@@ -29,13 +33,22 @@ for i in range(1000):
 
     try:
         game.new_game()
-        w[game.awale.winner] += 1
-    except Exception as e:
-        # game.display_board()
-        # print(e)
-        w[-1] += 1
+        if game.awale.winner == 0:
+            victoires += 1
+        elif game.awale.winner == 1:
+            defaites += 1
+        else:
+            egalites += 1
+            game.display_board()
+            game.display_result()
+        if game.moves_count == game.max_count:
+            depassements += 1
+    except:
+        erreurs += 1
 
-print(w)
+print("Victoires = {}, défaites = {}, égalités = {}, dépassements = {}, erreurs = {}".format(victoires, defaites,
+                                                                                             egalites, depassements,
+                                                                                             erreurs))
 
 # game = Game(QPlayer(model), NegabetaPlayer(1, evaluation1), debug=False)
 # game.new_game()

@@ -7,7 +7,7 @@ class Game:
     Permet de lancer une partie d'awalé.
     """
 
-    def __init__(self, player0, player1, board=None, score=None, debug=True, max_count=400):
+    def __init__(self, player0, player1, board=None, score=None, debug=True, max_count=1000):
         """
         :param board: plateau de jeu initial si différent du plateau de début de partie
         :param score: score de jeu initial si différent du score de début de partie
@@ -63,18 +63,12 @@ class Game:
         :return: aucun retour
         """
         print("La partie s'est terminée en {} coups.".format(self.moves_count))
-
-        if self.awale.score[0] < 24 and self.awale.score[1] < 24:
-            self.awale.get_seeds()
-
         self.display_score()
 
-        if self.awale.score[0] > self.awale.score[1]:
-            print("Le joueur 0 a gagné !\n")
-        elif self.awale.score[0] < self.awale.score[1]:
-            print("Le joueur 1 a gagné !\n")
-        else:
-            print("Il y a égalité !\n")
+        winner = self.awale.winner
+        result = {-1: "Il y a égalité !\n", 0: "Le joueur 0 a gagné !\n", 1: "Le joueur 1 a gagné !\n"}[winner]
+
+        print(result)
 
     def new_game(self):
         """
@@ -111,6 +105,15 @@ class Game:
                 raise ValueError("Erreur! La case {} ne peut pas être jouée.".format(move))
 
             player = 1 - player
+
+        if self.awale.score[0] < 24 and self.awale.score[1] < 24:
+            self.awale.get_seeds()
+            if self.awale.score[0] > self.awale.score[1]:
+                self.awale.winner = 0
+            elif self.awale.score[0] < self.awale.score[1]:
+                self.awale.winner = 1
+            else:
+                self.awale.winner = -1
 
         if self.debug:
             self.display_result()

@@ -43,7 +43,7 @@ def init_model():
 model = init_model()
 
 # Paramètres de l'entraînement
-epochs = 10000
+epochs = 1000
 gamma = 0.9
 epsilon = 0.1
 batch_size = 512
