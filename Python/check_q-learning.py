@@ -1,16 +1,18 @@
+import numpy
+import time
 from keras.models import load_model
 
 from evaluation import *
 from game import Game
 from negabeta_player import NegabetaPlayer
 from newbie_player import NewbiePlayer
-from q_player import QPlayer
+from q_player import QPlayer, get_state
 from random_player import RandomPlayer
 
 gamma = 0.9
 epsilon = 0.1
-epochs = 10000
-date = "2017-06-07-18-03-09"
+epochs = 35000
+date = "2017-06-10-18-35-43"
 
 parameters = "-gamma-{}-epsilon-{}-epochs-{}-".format(gamma, epsilon, epochs)
 directory = "C:\\Users\\Laouen\\PycharmProjects\\Awale\\QPlayers\\"
@@ -18,6 +20,28 @@ directory = "C:\\Users\\Laouen\\PycharmProjects\\Awale\\QPlayers\\"
 filename = directory + "qplayer" + parameters + date + ".model"
 
 model = load_model(filename)
+
+# Test sur un plateau
+
+# board = numpy.array([1, 0, 3, 7, 0, 3, 2, 3, 1, 3, 2, 2])
+# state = get_state(board)
+#
+# print(model.predict(numpy.array([state])))
+
+# Calcul du temps d'exécution moyen
+
+# t = time.clock()
+#
+# for i in range(10000):
+#     board = numpy.random.randint(0, 12, 12)
+#     state = get_state(board)
+#
+#     model.predict(numpy.array([state]))
+#
+# t = time.clock() - t
+# print(t/10000)
+
+# Test du modèle
 
 victoires = 0
 defaites = 0
