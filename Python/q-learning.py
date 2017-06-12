@@ -44,7 +44,7 @@ model = init_model()
 
 # Paramètres de l'entraînement
 epochs = 35000
-gamma = 0.1
+gamma = 0.5
 epsilon = 0.1
 batch_size = 512
 memory_size = 25000
